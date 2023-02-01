@@ -47,7 +47,12 @@ helm repo add argo https://argoproj.github.io/argo-helm
 helm upgrade -i argocd --namespace argocd --set redis.exporter.enabled=true --set redis.metrics.enabled=true --set server.metrics.enabled=true --set controller.metrics.enabled=true argo/argo-cd
 ```
 
-## Prometheus
+### Get the credentials
+
+Username: `admin`
+```bash
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+```
 
 ### Connect our main repository to argoCD
 
@@ -77,13 +82,13 @@ spec:
 EOF
 ```
 
-### Get the credentials
-
-Username: `admin`
+### Access the server UI
 ```bash
-kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+kubectl port-forward service/argocd-server -n argocd 8080:443
 ```
+Connect: [http://localhost:8080](http://localhost:8080)
 
+## Prometheus (Automatic Workflow - Just read and watch the  installation)
 
 ### Install Prometheus using argoCD
 We will install the full stack: kube-prometheus-stack
@@ -135,6 +140,13 @@ Related issue: Fix prometheus CRD being too big [#4439](https://github.com/prome
 
 We deployed a [Prometheus CRDs](https://github.com/naturalett/continuous-delivery/blob/main/argoCD/prometheus-operator-crds/application.yaml)
 
+### Access the server UI
+```bash
+kubectl port-forward service/kube-prometheus-stack-prometheus -n argocd 9090:9090
+```
+Connect: [http://localhost:9090](http://localhost:9090)
+
+
 ## Grafana
 
 ## Get Grafana password
@@ -142,9 +154,18 @@ Username: `admin`
 ```bash
 kubectl get secret -n argocd kube-prometheus-stack-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
 ```
-## Grafana Dashboard
-For dashboard we created a configMap and applied it with using the kustomization then we attached it during the deployment of Grafana\
+
+### Access the server UI
+```bash
+kubectl port-forward service/kube-prometheus-stack-grafana -n argocd 9092:80
+```
+
+### Grafana Dashboard
+For dashboard we created a [configMap](https://github.com/naturalett/continuous-delivery/blob/main/argoCD/grafana/dashboards/argo-cd.yaml) and applied it with using the [kustomization](https://github.com/naturalett/continuous-delivery/blob/main/argoCD/kustomization.yaml#L8) then we [attached it](https://github.com/naturalett/continuous-delivery/blob/main/argoCD/prometheus/application.yaml#L21-L25) during the deployment of Grafana\
 As well, we scrap the metrics that got exposed by the argoCD
+
+Connect: [http://localhost:9092](http://localhost:9092)
+
 
 
 ## Fire up an Alert
@@ -152,6 +173,13 @@ Run the following script:
 ```bash
 https://github.com/naturalett/continuous-delivery/blob/main/trigger_alert.sh
 ```
+
+### Access the server UI
+```bash
+kubectl port-forward service/alertmanager-operated -n argocd 9093:9093
+```
+Connect: [http://localhost:9093](http://localhost:9093)
+
 
 Watch the alert:
 ```bash
