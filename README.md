@@ -1,4 +1,4 @@
-# Start Kubernetes for Desktop
+# ArgoCD
 
 ## Pre-requisites
 * Helm
@@ -8,8 +8,6 @@
 brew install helm
 brew install kubectl
 ```
-
-# ArgoCD
 
 ### CleanUp
 
