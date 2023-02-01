@@ -1,0 +1,26 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- prometheus-operator-crds/application.yaml
+- prometheus/application.yaml
+- prometheus-node-exporter/application.yaml
+- grafana/dashboards/argo-cd.yaml
+# - argoCD-rollouts/application.yaml
+
+
+
+
+
+
+# kubectl delete crd alertmanagerconfigs.monitoring.coreos.com
+# kubectl delete crd alertmanagers.monitoring.coreos.com
+# kubectl delete crd podmonitors.monitoring.coreos.com
+# kubectl delete crd probes.monitoring.coreos.com
+# kubectl delete crd prometheuses.monitoring.coreos.com
+# kubectl delete crd prometheusrules.monitoring.coreos.com
+# kubectl delete crd servicemonitors.monitoring.coreos.com
+# kubectl delete crd thanosrulers.monitoring.coreos.com
+# kubectl delete crd applications.argoproj.io
+# kubectl delete crd applicationsets.argoproj.io
+# kubectl delete crd appprojects.argoproj.io
